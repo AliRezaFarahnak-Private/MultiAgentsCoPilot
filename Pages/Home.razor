@@ -2,15 +2,41 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Chat Application</h1>
 
-Welcome to your new app.
+<RadzenCard Style="max-width: 600px; margin: auto;">
+    <div style="height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+        @foreach (var message in messages)
+        {
+            <div style="margin-bottom: 10px;">
+                <strong>@message.User:</strong> @message.Text
+            </div>
+        }
+    </div>
+    <div style="margin-top: 10px;">
+        <RadzenTextBox @bind-Value="newMessage" Placeholder="Type your message..." Style="width: 80%;" />
+        <RadzenButton Click="@SendMessage" Text="Send" Style="width: 18%; margin-left: 2%;" />
+    </div>
+</RadzenCard>
 
-<RadzenButton Click="@ButtonClicked" Text="Hi"></RadzenButton>
 @code {
-    void ButtonClicked()
+    private List<Message> messages = new List<Message>();
+    private string newMessage;
+
+    void SendMessage()
     {
-        // Handle the Click event of RadzenButton
+        if (!string.IsNullOrWhiteSpace(newMessage))
+        {
+            messages.Add(new Message { User = "You", Text = newMessage });
+            // Simulate AI reply
+            messages.Add(new Message { User = "AI", Text = newMessage });
+            newMessage = string.Empty;
+        }
+    }
+
+    class Message
+    {
+        public string User { get; set; }
+        public string Text { get; set; }
     }
 }
-6. Use D
