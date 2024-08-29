@@ -27,7 +27,7 @@ class Program
 
     static async Task Main(string[] args)
     {
-        Utils.WriteColored(@$"Real-Time Database CoPilot{Environment.NewLine}", ConsoleColor.Yellow);
+        Utils.WriteColored(@$"Multi-Agent Database CoPilot{Environment.NewLine}", ConsoleColor.Yellow);
 
         IKernelBuilder kernelBuilder = Kernel.CreateBuilder()
             .AddAzureOpenAIChatCompletion(DeploymentName, EndPoint, Key);
