@@ -94,7 +94,7 @@
                 blazorTerminal.RespondText("try ask,html,text,help,? commands for demonstration", true);
                 break;
             default:
-                blazorTerminal.RespondText("unknown command", true);
+                blazorTerminal.RespondText(evenArgs.InputValue, true);
                 break;
         }
 
