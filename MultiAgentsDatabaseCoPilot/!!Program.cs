@@ -1,9 +1,9 @@
 ﻿using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
-using RealTimeDatabaseCoPilot.Plugin;
+using MultiAgentsDatabaseCoPilot.Plugin;
 
-namespace RealTimeDatabaseCoPilot;
+namespace MultiAgentsDatabaseCoPilot;
 
 class Program
 {
@@ -67,6 +67,7 @@ class Program
             completeResponse += content;
             Utils.WriteColored(content, ConsoleColor.Green, false);
         }
+        Utils.MakeNextLineInConsole();
         _session.AddAssistantMessage(completeResponse);
         return completeResponse;
     }

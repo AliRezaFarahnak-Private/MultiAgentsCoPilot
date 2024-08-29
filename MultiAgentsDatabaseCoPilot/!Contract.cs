@@ -1,4 +1,4 @@
-﻿namespace RealTimeDatabaseCoPilot;
+﻿namespace MultiAgentsDatabaseCoPilot;
 public record struct AppUser(
     DateTime Date_t,
     decimal AppStore_M_users,

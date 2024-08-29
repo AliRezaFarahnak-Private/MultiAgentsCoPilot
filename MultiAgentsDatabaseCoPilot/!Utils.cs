@@ -8,7 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace RealTimeDatabaseCoPilot
+namespace MultiAgentsDatabaseCoPilot
 {
     public static class Utils
     {
@@ -48,6 +48,11 @@ namespace RealTimeDatabaseCoPilot
             }
         }
 
+        public static void MakeNextLineInConsole()
+        {
+            Console.WriteLine(Environment.NewLine);
+        }
+
         public static void WriteColored(string message, ConsoleColor color, bool doWriteLine = true)
         {
             var previousColor = Console.ForegroundColor;
@@ -57,7 +62,7 @@ namespace RealTimeDatabaseCoPilot
             if (doWriteLine)
                 Console.WriteLine(message);
             else
-                Console.Write(message); 
+                Console.Write(message);
             Console.ForegroundColor = previousColor;
         }
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.SemanticKernel;
 
-namespace RealTimeDatabaseCoPilot;
+namespace MultiAgentsDatabaseCoPilot;
 
 #pragma warning disable SKEXP0001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 public class KernelFunctionInvocationFilter : IAutoFunctionInvocationFilter

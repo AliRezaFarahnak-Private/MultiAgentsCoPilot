@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-namespace RealTimeDatabaseCoPilot
+namespace MultiAgentsDatabaseCoPilot
 {
     public static class DBContext
     {

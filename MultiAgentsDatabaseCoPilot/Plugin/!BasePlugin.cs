@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using System.Text.Json;
 using System.Diagnostics;
 
-namespace RealTimeDatabaseCoPilot.Plugin;
+namespace MultiAgentsDatabaseCoPilot.Plugin;
 
 public abstract class BasePlugin
 {
@@ -24,7 +24,7 @@ public abstract class BasePlugin
                 codeQuery,
                 ScriptOptions.Default
                     .WithReferences(assemblies)
-                    .WithImports("System", "System.Linq", "System.Collections.Generic", $@"{nameof(RealTimeDatabaseCoPilot)}.Plugin", nameof(RealTimeDatabaseCoPilot))
+                    .WithImports("System", "System.Linq", "System.Collections.Generic", $@"{nameof(MultiAgentsDatabaseCoPilot)}.Plugin", nameof(MultiAgentsDatabaseCoPilot))
             );
 
             var resultString = JsonSerializer.Serialize(result);

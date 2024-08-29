@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using Microsoft.SemanticKernel;
 
-namespace RealTimeDatabaseCoPilot.Plugin;
+namespace MultiAgentsDatabaseCoPilot.Plugin;
 
 public class SalesPlugin : BasePlugin
 {
