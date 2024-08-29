@@ -1,0 +1,58 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>ECharts Example</title>
+    <!-- Import ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <style>
+        #main {
+            width: 600px;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div id="main"></div>
+    <script>
+        // Initialize the chart
+        var myChart = echarts.init(document.getElementById('main'));
+
+        // Specify the chart configuration
+        var option = {
+            title: {
+                text: 'Yearly Data',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            xAxis: {
+                type: 'category',
+                data: ['2019', '2020', '2021', '2022', '2023', '2024']
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [{
+                data: [2019, 2020, 2021, 2022, 2023, 2024],
+                type: 'line',
+                smooth: true,
+                itemStyle: {
+                    color: '#c23531'
+                },
+                lineStyle: {
+                    color: '#2f4554'
+                }
+            }]
+        };
+
+        // Use the specified configuration to display the chart
+        myChart.setOption(option);
+
+        // Reload the page every 3 seconds
+        setTimeout(function(){
+            location.reload();
+        }, 3000);
+    </script>
+</body>
+</html>
