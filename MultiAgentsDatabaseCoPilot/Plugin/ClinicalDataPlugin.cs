@@ -35,24 +35,4 @@ public static class DBContext
 
 // Example queries you might use with this new context:  
 /*  
-Pie Chart Questions:
-What proportion of participants are in the placebo group versus the Drug XYZ group?
-What is the gender distribution among participants?
-What percentage of participants experienced hypoglycemia?
-What proportion of participants discontinued due to adverse events?
-What percentage of participants experienced gastrointestinal issues?
-What proportion of participants had serious adverse events?
-What percentage of participants showed a quality of life improvement greater than 10?
-Bar Chart Questions:
-What is the average age of participants in the placebo group versus the Drug XYZ group?
-What is the average BMI of male versus female participants?
-How many participants experienced hypoglycemia in the placebo group versus the Drug XYZ group?
-What is the average change in HbA1c for participants with HbA1c below 7 in the placebo group versus the Drug XYZ group?
-How many participants discontinued due to adverse events in the placebo group versus the Drug XYZ group?
-What is the average medication adherence for participants in the placebo group versus the Drug XYZ group?
-How many participants experienced gastrointestinal issues in the placebo group versus the Drug XYZ group?
-How many participants had serious adverse events in the placebo group versus the Drug XYZ group?
-What is the distribution of body weight change among participants?
-What is the distribution of fasting plasma glucose levels among participants?
-
 */
