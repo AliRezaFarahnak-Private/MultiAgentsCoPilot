@@ -27,7 +27,7 @@ public abstract class BasePlugin
                     .WithImports("System", "System.Linq", "System.Collections.Generic", $@"{nameof(MultiAgentsDatabaseCoPilot)}.Plugin", nameof(MultiAgentsDatabaseCoPilot))
             );
 
-            var resultString = JsonSerializer.Serialize(result);
+            string resultString = JsonSerializer.Serialize(result);
 
             Utils.WriteColored(resultString, ConsoleColor.DarkCyan);
 

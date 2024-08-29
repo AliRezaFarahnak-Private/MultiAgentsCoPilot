@@ -32,7 +32,7 @@ class Program
         IKernelBuilder kernelBuilder = Kernel.CreateBuilder()
             .AddAzureOpenAIChatCompletion(DeploymentName, EndPoint, Key);
         Kernel = kernelBuilder.Build();
-        Kernel.ImportPluginFromType<SalesPlugin>();
+        Kernel.ImportPluginFromType<ClinicalDataPlugin>();
 
 #pragma warning disable SKEXP0001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
         Kernel.AutoFunctionInvocationFilters.Add(new KernelFunctionInvocationFilter());
