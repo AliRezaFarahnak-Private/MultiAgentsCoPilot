@@ -1,17 +1,29 @@
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Visualization</title>
-    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
-    <script>
-        function reloadPage() {
-            setTimeout(function() {
-                location.reload();
-            }, 3000);
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f2f5;
+            font-family: Arial, sans-serif;
         }
+        .message {
+            font-size: 24px;
+            color: #333;
+        }
+    </style>
+    <script>
+        setTimeout(function(){
+            location.reload();
+        }, 3000);
     </script>
 </head>
-<body onload="reloadPage()">
-    <h2>The data is not feasible for a visual chart.</h2>
+<body>
+    <div class="message">The data is not feasible for a visual chart.</div>
 </body>
 </html>
