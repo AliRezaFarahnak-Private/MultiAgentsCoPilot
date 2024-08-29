@@ -1,7 +1,127 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+@using BlazorComponents.Terminal
+@inject HttpClient httpc
 
-<h1>Hello!</h1>
+<PageTitle>Index</PageTitle>
 
-Welcome to your new app.
+<HeadContent>
+    <link href="_content/BlazorComponents.Terminal/style.css" rel="stylesheet" />
+    <link href="_content/BlazorComponents.Terminal/theme.default.css" rel="stylesheet" />
+</HeadContent>
+
+
+<BlazorTerminal @ref="blazorTerminal" Style="height:600px;" OnCommandEnter="commandEnter" OnAnswerEnter="answerEnter"></BlazorTerminal>
+
+@code {
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if (firstRender)
+        {
+
+            //blazorTerminal.ResponseText("BlazorComponents.Terminal is a terminal style web ui component.");
+            //blazorTerminal.ResponseText("input ask,html,text,help,? for demonstration");
+
+            //
+            blazorTerminal.ConfigPrompt(new CommandPrompt()
+                {
+                    Name = "",
+                    Host = "You",
+                    Path = "",
+                    Separator2 = ':',
+                    Prompt = ' ',
+                    AnswerPrompt = ">"
+                });
+
+            blazorTerminal.Return();
+        }
+
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+    }
+
+
+    async void commandEnter(TerminalEventArgs evenArgs)
+    {
+        if (string.IsNullOrEmpty(evenArgs.InputValue))
+        {
+            blazorTerminal.Return();
+            return;
+        }
+
+
+        switch (evenArgs.InputValue)
+        {
+            case "password":
+                blazorTerminal.RespondText("please input password",needInput:true,isPassword:true);
+                break;
+            case "progress":
+                var par1 = blazorTerminal.RespondText("download 00% :", false, false);
+                await _progress(par1);
+                blazorTerminal.Return();
+                break;
+            case "lines":
+                var par = blazorTerminal.RespondText("line1", false, false);
+                par.AddTextLine("line2");
+                par.AddTextLine("line3");
+                par.AddTextLine("line4");
+                par.AddTextLine("line5");
+                blazorTerminal.Return();
+                break;
+            case "clear":
+                blazorTerminal.Clear();
+                break;
+            case "ask":
+                blazorTerminal.RespondText(" continue process? y/n ", needInput: true);
+                break;
+            case "html":
+                blazorTerminal.RespondHtml("<a href='/'>this is html response</a>", true);
+                break;
+            case "text":
+                blazorTerminal.RespondText("text responese", true);
+                break;
+            case "image":
+                blazorTerminal.RespondImage("icon-192.png",autoReturn:true);
+                break;
+            case "help":
+            case "?":
+                blazorTerminal.RespondText("try ask,html,text,help,? commands for demonstration", true);
+                break;
+            default:
+                blazorTerminal.RespondText("unknown command", true);
+                break;
+        }
+
+    }
+
+    async void answerEnter(TerminalEventArgs evenArgs)
+    {
+        blazorTerminal.RespondText($"answer input: {evenArgs.InputValue}");
+
+        blazorTerminal.Return();
+    }
+
+
+    private BlazorTerminal blazorTerminal = default!;
+
+    async Task _progress (TerminalParagraph tp)
+    {
+        int i = 1;
+        while(i <= 100)
+        {
+            tp.UpdateTextLine(0, $"download {i}% :" + "".PadRight(i/2, '/'));
+            //this.StateHasChanged();
+            //Thread.Sleep(50);
+            await Task.Delay(50);
+            //var resp = await httpc.GetAsync("sample-data/weather.json");
+            i++;
+        }
+    }
+
+}
