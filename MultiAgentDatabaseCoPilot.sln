@@ -4,10 +4,6 @@ VisualStudioVersion = 17.10.35201.131
 MinimumVisualStudioVersion = 16.0.0.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MultiAgentsDatabaseCoPilot", "MultiAgentsDatabaseCoPilot\MultiAgentsDatabaseCoPilot.csproj", "{228D1B0F-82FC-4D73-AD1A-DC344F59185F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MultiAgentsDatabaseCoPilot.WASM", "MultiAgentsDatabaseCoPilot.WASM\MultiAgentsDatabaseCoPilot.WASM.csproj", "{05AAFD65-D13B-4993-93A9-80EB2EFC6130}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAgentDatabaseCoPilot.Server", "MultiAgentDatabaseCoPilot.Server\MultiAgentDatabaseCoPilot.Server.csproj", "{8F607A9D-BE62-478D-8BD6-EB46ABD9C3A2}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,14 +14,6 @@ Global
 		{228D1B0F-82FC-4D73-AD1A-DC344F59185F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{228D1B0F-82FC-4D73-AD1A-DC344F59185F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{228D1B0F-82FC-4D73-AD1A-DC344F59185F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{05AAFD65-D13B-4993-93A9-80EB2EFC6130}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{05AAFD65-D13B-4993-93A9-80EB2EFC6130}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{05AAFD65-D13B-4993-93A9-80EB2EFC6130}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{05AAFD65-D13B-4993-93A9-80EB2EFC6130}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8F607A9D-BE62-478D-8BD6-EB46ABD9C3A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8F607A9D-BE62-478D-8BD6-EB46ABD9C3A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8F607A9D-BE62-478D-8BD6-EB46ABD9C3A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8F607A9D-BE62-478D-8BD6-EB46ABD9C3A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
