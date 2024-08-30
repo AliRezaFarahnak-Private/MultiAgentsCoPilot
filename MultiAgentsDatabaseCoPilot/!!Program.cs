@@ -3,6 +3,7 @@ using Microsoft.SemanticKernel.Agents;
 using Microsoft.SemanticKernel.Agents.Chat;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 namespace MultiAgentsDatabaseCoPilot;
@@ -19,7 +20,10 @@ class Program
 
     static async Task Main(string[] args)
     {
-        Utils.WriteColored(@$"Multi-Agent Database CoPilot{Environment.NewLine}", ConsoleColor.Yellow);
+        /*
+         * Make a world time application visualizing 8 round clocks with different time zones and the country name under it. 
+         */
+        Utils.WriteColored(@$"Multi-Agent ProgramManager SoftwareEngineer ProjectManager{Environment.NewLine}", ConsoleColor.Yellow);
 
         IKernelBuilder kernelBuilder = Kernel.CreateBuilder()
             .AddAzureOpenAIChatCompletion(DeploymentName, EndPoint, Key);
@@ -99,6 +103,7 @@ class Program
                 if (TryCropHtmlContent(content.Content, out string croppedHtml))
                 {
                     Console.WriteLine($"# {content.Role} - {content.AuthorName ?? "*"}: '{croppedHtml}'");
+                    OpenHtmlInBrowser(croppedHtml);
                 }
                 else
                 {
@@ -118,6 +123,12 @@ class Program
         }
         croppedHtml = null;
         return false;
+    }
+    private static void OpenHtmlInBrowser(string htmlContent)
+    {
+        string tempFilePath = Path.Combine(Path.GetTempPath(), "temp.html");
+        File.WriteAllText(tempFilePath, htmlContent);
+        Process.Start(new ProcessStartInfo(tempFilePath) { UseShellExecute = true });
     }
 }
 
