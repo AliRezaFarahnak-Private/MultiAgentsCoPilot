@@ -66,35 +66,6 @@ namespace MultiAgentsDatabaseCoPilot
             Console.ForegroundColor = previousColor;
         }
 
-        public async static void ConvertToEChartHtml(string json)
-        {
-            try
-            {
-                ChatHistory messages = new ChatHistory();
-                messages.AddUserMessage(@$"Convert this data to be presented as a echart in a html file, give me the complete HTML so it can be displayed, also add a small script that reloads the page every 3 second.
-                                           If it doesnt make sense to display it as a echart, just give me the HTML and message that says that the data is not feasible for a visual chart.
-                                           Try to make the echarts colorful and beautiful, and if it is just one number then say also is not feasible to display.
-                                           Only give answer with the clean html. This is the data: {json}");
-
-                var response = await Program.Kernel.GetRequiredService<IChatCompletionService>().GetChatMessageContentAsync(messages, Program.ExecutionSettings, Program.Kernel);
-                var content = response.Content;
-
-                // Extract HTML content using regex  
-                string pattern = @"<html[\s\S]*<\/html>";
-                Match match = Regex.Match(content, pattern, RegexOptions.IgnoreCase);
-                string htmlContent = match.Value;
-
-                // Save the content to an HTML file named "echart.html" three directories up from the current executable  
-                SaveHtmlToFile(htmlContent, "echart.html");
-                Utils.WriteColored(@$"{Environment.NewLine}Visualization handled", ConsoleColor.Cyan);
-                Console.WriteLine(Environment.NewLine);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"An error occurred while converting the data to an EChart: {ex.Message}");
-            }
-        }
-
         private static void SaveHtmlToFile(string htmlContent, string fileName)
         {
             try
