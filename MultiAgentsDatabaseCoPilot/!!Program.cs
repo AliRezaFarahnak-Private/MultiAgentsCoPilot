@@ -3,6 +3,7 @@ using Microsoft.SemanticKernel.Agents;
 using Microsoft.SemanticKernel.Agents.Chat;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
+using System.Text.RegularExpressions;
 
 namespace MultiAgentsDatabaseCoPilot;
 #pragma warning disable SKEXP0110, SKEXP0001, SKEXP0101
@@ -16,7 +17,6 @@ class Program
 
     private static ChatHistory _session = new();
 
-
     static async Task Main(string[] args)
     {
         Utils.WriteColored(@$"Multi-Agent Database CoPilot{Environment.NewLine}", ConsoleColor.Yellow);
@@ -26,7 +26,7 @@ class Program
         Kernel = kernelBuilder.Build();
 
         Kernel.AutoFunctionInvocationFilters.Add(new KernelFunctionInvocationFilter());
-      
+
         string ProgramManager = """      
     You are a Program Manager responsible for gathering detailed requirements from the user   
     and creating a comprehensive plan for app development. You will document the user   
@@ -45,8 +45,6 @@ class Program
     requirements are met. Once all requirements are satisfied, you can approve the request   
     by simply responding with "approve".  
 """;
-
-
 
         ChatCompletionAgent SoftwareEngineerAgent =
                    new()
@@ -98,11 +96,29 @@ class Program
 
             await foreach (var content in chat.InvokeAsync())
             {
-                Console.WriteLine($"# {content.Role} - {content.AuthorName ?? "*"}: '{content.Content}'");
+                if (TryCropHtmlContent(content.Content, out string croppedHtml))
+                {
+                    Console.WriteLine($"# {content.Role} - {content.AuthorName ?? "*"}: '{croppedHtml}'");
+                }
+                else
+                {
+                    Console.WriteLine($"# {content.Role} - {content.AuthorName ?? "*"}: '{content.Content}'");
+                }
             }
         }
     }
 
+    private static bool TryCropHtmlContent(string content, out string croppedHtml)
+    {
+        var match = Regex.Match(content, @"<html[\s\S]*?<\/html>", RegexOptions.IgnoreCase);
+        if (match.Success)
+        {
+            croppedHtml = match.Value;
+            return true;
+        }
+        croppedHtml = null;
+        return false;
+    }
 }
 
 sealed class ApprovalTerminationStrategy : TerminationStrategy
