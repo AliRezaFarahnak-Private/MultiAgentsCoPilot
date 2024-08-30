@@ -1,6 +1,5 @@
 ﻿@page "/"
 @using BlazorComponents.Terminal
-@inject HttpClient httpc
 @inject SemanticKernelService semanticKernelService
 
 <PageTitle>Index</PageTitle>
@@ -23,7 +22,7 @@
 
     private async void commandEnter(TerminalEventArgs eventArgs)
     {
-        
+
         if (string.IsNullOrEmpty(eventArgs.InputValue))
         {
             blazorTerminal.Return();
