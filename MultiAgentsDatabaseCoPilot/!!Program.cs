@@ -11,17 +11,19 @@ namespace MultiAgentsDatabaseCoPilot;
 
 class Program
 {
-    public static string DeploymentName = Utils.Configuration["AzureOpenAI:DeploymentName"];
-    public static string EndPoint = Utils.Configuration["AzureOpenAI:Endpoint"];
-    public static string Key = Utils.Configuration["AzureOpenAI:ApiKey"];
-    public static Kernel Kernel;
+    public static string DeploymentName = Utils.Configuration["AzureOpenAI:DeploymentName"] ?? throw new ArgumentNullException("AzureOpenAI:DeploymentName");
+    public static string EndPoint = Utils.Configuration["AzureOpenAI:Endpoint"] ?? throw new ArgumentNullException("AzureOpenAI:Endpoint");
+    public static string Key = Utils.Configuration["AzureOpenAI:ApiKey"] ?? throw new ArgumentNullException("AzureOpenAI:ApiKey");
+    public static Kernel Kernel = null!;
 
     private static ChatHistory _session = new();
 
     static async Task Main(string[] args)
     {
         /*
-         * Make a world time application visualizing 8 round clocks with different time zones and the country name under it. 
+         * Nake a calculator app
+         * 
+         * Make a very simple world time app visualizing 4 round clocks with different time zones and the country name under it 
          */
         Utils.WriteColored(@$"Multi-Agent ProgramManager SoftwareEngineer ProjectManager{Environment.NewLine}", ConsoleColor.Yellow);
 
@@ -50,70 +52,78 @@ class Program
     by simply responding with "approve".  
 """;
 
-        ChatCompletionAgent SoftwareEngineerAgent =
-                   new()
-                   {
-                       Instructions = SoftwareEngineer,
-                       Name = "SoftwareEngineerAgent",
-                       Kernel = Kernel
-                   };
-
-        ChatCompletionAgent ProjectManagerAgent =
-                   new()
-                   {
-                       Instructions = ProjectManager,
-                       Name = "ProjectManagerAgent",
-                       Kernel = Kernel
-                   };
-
-        AgentGroupChat chat =
-                    new(new ChatCompletionAgent()
-                    {
-                        Instructions = ProgramManager,
-                        Name = "ProgaramManagerAgent",
-                        Kernel = Kernel
-                    }, SoftwareEngineerAgent, ProjectManagerAgent)
-                    {
-                        ExecutionSettings =
-                            new()
-                            {
-                                TerminationStrategy =
-                                    new ApprovalTerminationStrategy()
-                                    {
-                                        Agents = [ProjectManagerAgent],
-                                        MaximumIterations = 6,
-                                    }
-                            }
-                    };
-
         while (true)
         {
-            Console.WriteLine("Explain your detailed requirement for you html application.");
-            string user = Console.ReadLine();
-            if (user.ToLower() == "exit")
+            ChatCompletionAgent SoftwareEngineerAgent =
+                       new()
+                       {
+                           Instructions = SoftwareEngineer,
+                           Name = "SoftwareEngineerAgent",
+                           Kernel = Kernel
+                       };
+
+            ChatCompletionAgent ProjectManagerAgent =
+                       new()
+                       {
+                           Instructions = ProjectManager,
+                           Name = "ProjectManagerAgent",
+                           Kernel = Kernel
+                       };
+
+            AgentGroupChat chat =
+                        new(new ChatCompletionAgent()
+                        {
+                            Instructions = ProgramManager,
+                            Name = "ProgaramManagerAgent",
+                            Kernel = Kernel
+                        }, SoftwareEngineerAgent, ProjectManagerAgent)
+                        {
+                            ExecutionSettings =
+                                new()
+                                {
+                                    TerminationStrategy =
+                                        new ApprovalTerminationStrategy()
+                                        {
+                                            Agents = [ProjectManagerAgent],
+                                            MaximumIterations = 6,
+                                        }
+                                }
+                        };
+
+            string? user = Console.ReadLine();
+            if (user == null || user.ToLower() == "exit")
             {
                 break;
             }
 
             chat.AddChatMessage(new ChatMessageContent(AuthorRole.User, user));
-            Console.WriteLine($"# {AuthorRole.User}: '{user}'");
+
+            bool htmlCreated = false;
 
             await foreach (var content in chat.InvokeAsync())
             {
-                if (TryCropHtmlContent(content.Content, out string croppedHtml))
+                if (content.Content != null && TryCropHtmlContent(content.Content, out string? croppedHtml))
                 {
                     Console.WriteLine($"# {content.Role} - {content.AuthorName ?? "*"}: '{croppedHtml}'");
                     OpenHtmlInBrowser(croppedHtml);
+                    htmlCreated = true;
+                    break;
                 }
                 else
                 {
                     Console.WriteLine($"# {content.Role} - {content.AuthorName ?? "*"}: '{content.Content}'");
                 }
             }
+
+            if (htmlCreated)
+            {
+                // Reset the chat session after creating an HTML file
+                continue; // Restart the loop
+            }
         }
     }
 
-    private static bool TryCropHtmlContent(string content, out string croppedHtml)
+    private static bool TryCropHtmlContent(string content, out string? croppedHtml)
     {
         var match = Regex.Match(content, @"<html[\s\S]*?<\/html>", RegexOptions.IgnoreCase);
         if (match.Success)
@@ -124,6 +134,7 @@ class Program
         croppedHtml = null;
         return false;
     }
+
     private static void OpenHtmlInBrowser(string htmlContent)
     {
         string tempFilePath = Path.Combine(Path.GetTempPath(), "temp.html");
