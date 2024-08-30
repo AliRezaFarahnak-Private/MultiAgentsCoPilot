@@ -1,8 +1,12 @@
 ﻿using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.Agents;
+using Microsoft.SemanticKernel.Agents.Chat;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
+using Microsoft.SemanticKernel.Experimental.Agents;
 
 namespace MultiAgentsDatabaseCoPilot;
+#pragma warning disable SKEXP0110, SKEXP0001, SKEXP0101
 
 class Program
 {
@@ -31,15 +35,70 @@ class Program
         IKernelBuilder kernelBuilder = Kernel.CreateBuilder()
             .AddAzureOpenAIChatCompletion(DeploymentName, EndPoint, Key);
         Kernel = kernelBuilder.Build();
-        Kernel.ImportPluginFromType<ClinicalDataPlugin>();
+     //   Kernel.ImportPluginFromType<ClinicalDataPlugin>();
 
-#pragma warning disable SKEXP0001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-        Kernel.AutoFunctionInvocationFilters.Add(new KernelFunctionInvocationFilter());
-#pragma warning restore SKEXP0001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+      Kernel.AutoFunctionInvocationFilters.Add(new KernelFunctionInvocationFilter());
 
         _session = new ChatHistory();
 
-        DBContext.LoadData();
+       
+        // DBContext.LoadData();
+
+
+        string ProgamManager = """
+    You are a program manager which will take the requirement and create a plan for creating app. Program Manager understands the 
+    user requirements and form the detail documents with requirements and costing. 
+""";
+
+        string SoftwareEngineer = """
+   You are Software Engieer, and your goal is develop web app using HTML and JavaScript (JS) by taking into consideration all
+   the requirements given by Program Manager. 
+""";
+
+        string ProjectManager = """
+    You are manager which will review software engineer code, and make sure all client requirements are completed.
+     Once all client requirements are completed, you can approve the request by just responding "approve"
+""";
+
+
+        Microsoft.SemanticKernel.Agents.ChatCompletionAgent ProgaramManagerAgent =
+                   new()
+                   {
+                       Instructions = ProgamManager,
+                       Name = "ProgaramManagerAgent",
+                       Kernel = Kernel
+                   };
+
+        Microsoft.SemanticKernel.Agents.ChatCompletionAgent SoftwareEngineerAgent =
+                   new()
+                   {
+                       Instructions = SoftwareEngineer,
+                       Name = "SoftwareEngineerAgent",
+                       Kernel = Kernel
+                   };
+
+        Microsoft.SemanticKernel.Agents.ChatCompletionAgent ProjectManagerAgent =
+                   new()
+                   {
+                       Instructions = ProjectManager,
+                       Name = "ProjectManagerAgent",
+                       Kernel = Kernel
+                   };
+
+        AgentGroupChat chat =
+                    new(ProgaramManagerAgent, SoftwareEngineerAgent, ProjectManagerAgent)
+                    {
+                        ExecutionSettings =
+                            new()
+                            {
+                                TerminationStrategy =
+                                    new ApprovalTerminationStrategy()
+                                    {
+                                        Agents = [ProjectManagerAgent],
+                                        MaximumIterations = 6,
+                                    }
+                            }
+                    };
 
         while (true)
         {
@@ -48,8 +107,16 @@ class Program
             {
                 break;
             }
-            await TextCompletionAsync(user);
-            _session.ScopeSessionToMaxMessages();
+
+
+            chat.AddChatMessage(new ChatMessageContent(AuthorRole.User, user));
+            Console.WriteLine($"# {AuthorRole.User}: '{user}'");
+
+            await foreach (var content in chat.InvokeAsync())
+            {
+                Console.WriteLine($"# {content.Role} - {content.AuthorName ?? "*"}: '{content.Content}'");
+            }
+           _session.ScopeSessionToMaxMessages();
         }
     }
 
@@ -71,3 +138,12 @@ class Program
         return completeResponse;
     }
 }
+
+sealed class ApprovalTerminationStrategy : TerminationStrategy
+{
+    // Terminate when the final message contains the term "approve"
+    protected override Task<bool> ShouldAgentTerminateAsync(Agent agent, IReadOnlyList<ChatMessageContent> history, CancellationToken cancellationToken)
+        => Task.FromResult(history[history.Count - 1].Content?.Contains("approve", StringComparison.OrdinalIgnoreCase) ?? false);
+}
+
+#pragma warning restore SKEXP0110, SKEXP0001, SKEXP0101
