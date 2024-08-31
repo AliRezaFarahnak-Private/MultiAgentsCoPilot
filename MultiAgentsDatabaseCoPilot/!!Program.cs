@@ -27,7 +27,7 @@ class Program
          * 
          * 
          */
-        Utils.WriteColored(@$"Multi-Agent ProgramManager SoftwareEngineer ProjectManager{Environment.NewLine}", ConsoleColor.Yellow);
+        Utils.WriteColored(@$"Multi-Agent ProgramManager SoftwareEngineer ProjectManager UXEngineer{Environment.NewLine}", ConsoleColor.Yellow);
 
         IKernelBuilder kernelBuilder = Kernel.CreateBuilder()
             .AddAzureOpenAIChatCompletion(DeploymentName, EndPoint, Key);
