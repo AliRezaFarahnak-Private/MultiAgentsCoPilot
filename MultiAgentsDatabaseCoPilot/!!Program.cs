@@ -21,9 +21,11 @@ class Program
     static async Task Main(string[] args)
     {
         /*
-         * Nake a calculator app
+         * Nake a very simple calculator app
          * 
          * Make a very simple world time app visualizing 4 round clocks with different time zones and the country name under it 
+         * 
+         * 
          */
         Utils.WriteColored(@$"Multi-Agent ProgramManager SoftwareEngineer ProjectManager{Environment.NewLine}", ConsoleColor.Yellow);
 
@@ -43,7 +45,7 @@ class Program
         string SoftwareEngineer = """     
     You are a Software Engineer tasked with developing a web app using HTML and JavaScript (JS).   
     You must adhere to all the requirements specified by the Program Manager. Your output   
-    should consist of a single file containing the complete HTML and JS code.  
+    should consist of a single file containing the complete HTML and JS code that satisfies the requirements from the program manager.
 """;
 
         string ProjectManager = """      
@@ -70,13 +72,17 @@ class Program
                            Kernel = Kernel
                        };
 
-            AgentGroupChat chat =
-                        new(new ChatCompletionAgent()
+            ChatCompletionAgent ProgramManagermentAgent =
+                        new()
                         {
                             Instructions = ProgramManager,
                             Name = "ProgaramManagerAgent",
                             Kernel = Kernel
-                        }, SoftwareEngineerAgent, ProjectManagerAgent)
+                        };
+
+
+            AgentGroupChat chat =
+                        new(ProgramManagermentAgent, SoftwareEngineerAgent, ProjectManagerAgent)
                         {
                             ExecutionSettings =
                                 new()
