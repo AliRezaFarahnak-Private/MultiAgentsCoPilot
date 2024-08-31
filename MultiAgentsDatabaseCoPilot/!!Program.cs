@@ -41,11 +41,17 @@ class Program
     requirements and provide cost estimates. Ensure you extract all necessary requirements   
     from the user.  
 """;
-
         string SoftwareEngineer = """     
     You are a Software Engineer tasked with developing a web app using HTML and JavaScript (JS).   
     You must adhere to all the requirements specified by the Program Manager. Your output   
     should consist of a single file containing the complete HTML and JS code that satisfies the requirements from the program manager.
+""";
+
+        string UXEngineer = """  
+    You are a UX Engineer responsible for the user experience and interface design of the web app.  
+    Your task is to make the UI modern, beautiful, and user-friendly. You need to work closely  
+    with the Program Manager to ensure that the user requirements are met and with the Software Engineer  
+    to ensure the design is feasible and implemented correctly.  
 """;
 
         string ProjectManager = """      
@@ -80,9 +86,17 @@ class Program
                             Kernel = Kernel
                         };
 
+            ChatCompletionAgent UXEngineerAgent =
+                new()
+                {
+                    Instructions = UXEngineer,
+                    Name = "UXEngineerAgent",
+                    Kernel = Kernel
+                };
+
 
             AgentGroupChat chat =
-                        new(ProgramManagermentAgent, SoftwareEngineerAgent, ProjectManagerAgent)
+                        new(ProgramManagermentAgent, SoftwareEngineerAgent, ProjectManagerAgent, UXEngineerAgent)
                         {
                             ExecutionSettings =
                                 new()
