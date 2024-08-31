@@ -105,7 +105,7 @@ class Program
                                         new ApprovalTerminationStrategy()
                                         {
                                             Agents = [ProjectManagerAgent],
-                                            MaximumIterations = 6,
+                                            MaximumIterations = 10,
                                         }
                                 }
                         };
