@@ -2,7 +2,6 @@
 using Microsoft.SemanticKernel.Agents;
 using Microsoft.SemanticKernel.Agents.Chat;
 using Microsoft.SemanticKernel.ChatCompletion;
-using Microsoft.SemanticKernel.Connectors.OpenAI;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
@@ -27,14 +26,6 @@ class Program
          * 
          * 
          */
-        Utils.WriteColored(@$"Multi-Agent ProgramManager SoftwareEngineer ProjectManager UXEngineer{Environment.NewLine}", ConsoleColor.Yellow);
-
-        IKernelBuilder kernelBuilder = Kernel.CreateBuilder()
-            .AddAzureOpenAIChatCompletion(DeploymentName, EndPoint, Key);
-        Kernel = kernelBuilder.Build();
-
-        Kernel.AutoFunctionInvocationFilters.Add(new KernelFunctionInvocationFilter());
-
         string ProgramManager = """      
     You are a Program Manager responsible for gathering detailed requirements from the user   
     and creating a comprehensive plan for app development. You will document the user   
@@ -47,18 +38,20 @@ class Program
     should consist of a single file containing the complete HTML and JS code that satisfies the requirements from the program manager.
 """;
 
-        string UXEngineer = """  
-    You are a UX Engineer responsible for the user experience and interface design of the web app.  
-    Your task is to make the UI modern, beautiful, and user-friendly. You need to work closely  
-    with the Program Manager to ensure that the user requirements are met and with the Software Engineer  
-    to ensure the design is feasible and implemented correctly.  
-""";
-
-        string ProjectManager = """      
+        string ProductOwner = """      
     You are a Project Manager who reviews the Software Engineer's code to ensure all client   
     requirements are met. Once all requirements are satisfied, you can approve the request   
     by simply responding with "approve".  
 """;
+
+        Utils.WriteColored(@$"Multi-Agent {nameof(ProgramManager)} {nameof(SoftwareEngineer)} {nameof(ProductOwner)}{Environment.NewLine}", ConsoleColor.Yellow);
+
+        IKernelBuilder kernelBuilder = Kernel.CreateBuilder()
+            .AddAzureOpenAIChatCompletion(DeploymentName, EndPoint, Key);
+        Kernel = kernelBuilder.Build();
+
+        Kernel.AutoFunctionInvocationFilters.Add(new KernelFunctionInvocationFilter());
+
 
         while (true)
         {
@@ -66,37 +59,29 @@ class Program
                        new()
                        {
                            Instructions = SoftwareEngineer,
-                           Name = "SoftwareEngineerAgent",
+                           Name = nameof(SoftwareEngineerAgent),
                            Kernel = Kernel
                        };
 
-            ChatCompletionAgent ProjectManagerAgent =
-                       new()
-                       {
-                           Instructions = ProjectManager,
-                           Name = "ProjectManagerAgent",
-                           Kernel = Kernel
-                       };
 
-            ChatCompletionAgent ProgramManagermentAgent =
+            ChatCompletionAgent ProgramManagerAgent =
                         new()
                         {
                             Instructions = ProgramManager,
-                            Name = "ProgaramManagerAgent",
+                            Name = nameof(ProgramManagerAgent),
                             Kernel = Kernel
                         };
 
-            ChatCompletionAgent UXEngineerAgent =
-                new()
-                {
-                    Instructions = UXEngineer,
-                    Name = "UXEngineerAgent",
-                    Kernel = Kernel
-                };
-
+            ChatCompletionAgent ProductOwnerAgent =
+                       new()
+                       {
+                           Instructions = ProductOwner,
+                           Name = nameof(ProductOwnerAgent),
+                           Kernel = Kernel
+                       };
 
             AgentGroupChat chat =
-                        new(ProgramManagermentAgent, SoftwareEngineerAgent, ProjectManagerAgent, UXEngineerAgent)
+                        new(ProgramManagerAgent, SoftwareEngineerAgent, ProductOwnerAgent)
                         {
                             ExecutionSettings =
                                 new()
@@ -104,8 +89,8 @@ class Program
                                     TerminationStrategy =
                                         new ApprovalTerminationStrategy()
                                         {
-                                            Agents = [ProjectManagerAgent],
-                                            MaximumIterations = 10,
+                                            Agents = [ProductOwnerAgent],
+                                            MaximumIterations = 15,
                                         }
                                 }
                         };
@@ -118,7 +103,7 @@ class Program
 
             chat.AddChatMessage(new ChatMessageContent(AuthorRole.User, user));
 
-            bool htmlCreated = false;
+            bool appCreated = false;
 
             await foreach (var content in chat.InvokeAsync())
             {
@@ -126,7 +111,7 @@ class Program
                 {
                     Console.WriteLine($"# {content.Role} - {content.AuthorName ?? "*"}: '{croppedHtml}'");
                     OpenHtmlInBrowser(croppedHtml);
-                    htmlCreated = true;
+                    appCreated = true;
                     break;
                 }
                 else
@@ -135,9 +120,8 @@ class Program
                 }
             }
 
-            if (htmlCreated)
+            if (appCreated)
             {
-                // Reset the chat session after creating an HTML file
                 continue; // Restart the loop
             }
         }
