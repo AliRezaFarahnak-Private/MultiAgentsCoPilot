@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace MultiAgentsDatabaseCoPilot;
+namespace MultiAgentsCoPilot;
 
 #pragma warning disable SKEXP0110, SKEXP0001, SKEXP0101
 class Program
