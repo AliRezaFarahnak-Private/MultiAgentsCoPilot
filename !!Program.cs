@@ -35,6 +35,8 @@ class Program
                 DisplayWelcomeMessage();
 
                 var softwareEngineerAgent = CreateAgent("SoftwareEngineer", SoftwareEngineer);
+                    softwareEngineerAgent.Kernel.ImportPluginFromType<WorldWeatherPlugin>();
+
                 var programManagerAgent = CreateAgent("ProgramManager", ProgramManager);
                 var productOwnerAgent = CreateAgent("ProductOwner", ProductOwner);
 
